@@ -89,6 +89,7 @@ export default function Profile() {
   const api = useApi();
   const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [profileError, setProfileError] = useState<string | null>(null);
 
   useEffect(() => {
     loadProfile();
@@ -96,6 +97,7 @@ export default function Profile() {
 
   const loadProfile = async () => {
     try {
+      setProfileError(null);
       if (role === 'student') {
         const data = await api.fetchApi(`/students/${currentUser?.uid}`);
         setProfileData(data);
@@ -107,7 +109,8 @@ export default function Profile() {
         setProfileData(data);
       }
     } catch (error) {
-      console.error('Failed to load profile:', error);
+      const message = error instanceof Error ? error.message : 'Failed to load profile';
+      setProfileError(message);
     } finally {
       setLoading(false);
     }
@@ -121,6 +124,11 @@ export default function Profile() {
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
+      {profileError && (
+        <div className="border border-destructive/30 bg-destructive/5 text-destructive text-sm rounded-lg px-4 py-3">
+          {profileError}
+        </div>
+      )}
       {/* Header */}
       <div className="glass-panel border rounded-xl p-6">
         <div className="flex items-start justify-between">

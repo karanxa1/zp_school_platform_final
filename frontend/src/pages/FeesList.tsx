@@ -16,15 +16,29 @@ export default function FeesList() {
   const { fetchApi } = useApi();
   const { role } = useAuth();
 
-  const canRecord = ["admin", "super_admin", "principal"].includes(role || '');
+  const canRecord = ["super_admin", "principal"].includes(role || '');
+  const [error, setError] = useState<string | null>(null);
 
   const load = () => {
     setLoading(true);
+    setError(null);
     const endpoint = activeTab === 'structure' ? '/fees/structure' : '/fees/payments';
+
+    if (activeTab === 'payments' && !["super_admin", "principal"].includes(role || '')) {
+      setData([]);
+      setLoading(false);
+      setError("You don't have permission to view fee payment records.");
+      return;
+    }
+
     fetchApi(endpoint).then(res => {
       setData(res || []);
       setLoading(false);
-    }).catch(err => { console.error(err); setLoading(false); });
+    }).catch(err => {
+      const message = err instanceof Error ? err.message : 'Failed to load fee data';
+      setError(message);
+      setLoading(false);
+    });
   };
 
   useEffect(() => { load(); }, [activeTab]);
@@ -35,7 +49,9 @@ export default function FeesList() {
       await fetchApi('/fees/payments', { method: 'POST', body: JSON.stringify({ ...formData, amount_paid: Number(formData.amount_paid) }) });
       setOpen(false);
       load();
-    } catch (err) { console.error(err); }
+    } catch {
+      // Error message is handled via useApi; keep console clean here.
+    }
   };
 
   return (
@@ -98,6 +114,12 @@ export default function FeesList() {
           </button>
         ))}
       </div>
+
+      {error && (
+        <div className="border border-destructive/30 bg-destructive/5 text-destructive text-sm rounded-lg px-4 py-3">
+          {error}
+        </div>
+      )}
 
       <div className="glass-panel border rounded-xl overflow-hidden">
         <Table>

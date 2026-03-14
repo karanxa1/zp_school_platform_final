@@ -1,7 +1,7 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from firebase_admin import auth
-
+from app.core.database import get_db
 security = HTTPBearer()
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
@@ -16,14 +16,18 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-def get_current_user(token: dict = Depends(verify_token)):
+def get_current_user(token: dict = Depends(verify_token), db = Depends(get_db)):
     user_id = token.get("uid")
     if not user_id:
         raise HTTPException(status_code=401, detail="User not found in token")
     
-    # In a real app, role is often set in custom claims
-    # If using custom claims, it would be `token.get("role")`
-    # Defaulting to student if unassigned
+    if "role" not in token:
+        user_doc = db.collection('users').document(user_id).get()
+        if user_doc.exists:
+            token['role'] = user_doc.to_dict().get("role", "student")
+        else:
+            token['role'] = "student"
+            
     return token
 
 class RoleChecker:

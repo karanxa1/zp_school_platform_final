@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useApi } from '../hooks/useApi';
 import { useAuth } from '../context/AuthContext';
@@ -11,7 +11,7 @@ import { useAuth } from '../context/AuthContext';
 type Status = 'present' | 'absent' | 'late' | 'half_day';
 interface StudentRow { id: string; first_name: string; last_name: string; roll_number: number; }
 interface AttRecord { student_id: string; status: Status; remarks?: string; }
-interface AttSession { id: string; date: string; class_id: string; section_id: string; records: AttRecord[]; }
+interface AttSession { id: string; date: string; class_id: string; section_id: string; records: AttRecord[]; present_count?: number; absent_count?: number; }
 interface StudentHistory { date: string; class_id: string; section_id: string; status: Status; remarks?: string; }
 
 const statusColors: Record<string, string> = {
@@ -391,8 +391,9 @@ export default function AttendanceList() {
               : sessions.length === 0
               ? <TableRow><TableCell colSpan={7} className="text-center py-12 text-muted-foreground">No attendance sessions recorded yet.</TableCell></TableRow>
               : sessions.map(s => {
-                const pct = (s.present_count + s.absent_count) > 0
-                  ? Math.round((s.present_count / ((s.present_count || 0) + (s.absent_count || 0))) * 100) : 0;
+                const p = s.present_count ?? 0;
+                const a = s.absent_count ?? 0;
+                const pct = (p + a) > 0 ? Math.round((p / (p + a)) * 100) : 0;
                 return (
                   <TableRow key={s.id}>
                     <TableCell className="font-medium">{(s as any).date}</TableCell>
