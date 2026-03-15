@@ -21,11 +21,13 @@ app.add_middleware(
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
+    logger.info(f"API Call: {request.method} {request.url.path}")
     try:
         response = await call_next(request)
+        logger.info(f"API Response: {request.method} {request.url.path} - Status: {response.status_code}")
         return response
     except Exception as e:
-        logger.exception(f"Unhandled error processing {request.method} {request.url.path}")
+        logger.exception(f"API Error: {request.method} {request.url.path} - {str(e)}")
         raise e
 
 @app.exception_handler(Exception)

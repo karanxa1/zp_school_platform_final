@@ -3,11 +3,11 @@ import sys
 
 def setup_logger():
     logger = logging.getLogger("erp_backend")
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     
     # Create console handler
     ch = logging.StreamHandler(sys.stdout)
-    ch.setLevel(logging.DEBUG)
+    ch.setLevel(logging.INFO)
     
     # Create formatter and add to handler
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
