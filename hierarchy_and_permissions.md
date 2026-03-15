@@ -4,6 +4,70 @@ This document defines the absolute source of truth for all roles, permissions, a
 
 ---
 
+## Visual Overviews
+
+### 1. Management Hierarchy (Account Creation)
+```mermaid
+graph TD
+    SA["Super Admin"] --> P["Principal"]
+    SA --> H["HOD"]
+    SA --> T["Teacher"]
+    SA --> S["Staff"]
+    
+    P --> PH["HOD"]
+    P --> PT["Teacher"]
+    P --> PS["Staff"]
+    
+    PH --> PHT["Teacher"]
+    PH --> PHS["Staff"]
+    
+    PHT["Teacher"] --> ST["Student"]
+
+    subgraph "Global Scope"
+    SA
+    P
+    end
+
+    subgraph "Department Scope"
+    PH
+    PHS
+    PHT
+    end
+
+    subgraph "Class Scope"
+    ST
+    end
+```
+
+### 2. Functional Access Map (Permissions)
+```mermaid
+flowchart LR
+    A["Admins (Super/Principal/HOD)"] --> AC["Academics & Staff Management"]
+    A --> F["Fees & Finance"]
+    A --> R["System Settings & Reports"]
+    
+    T["Teacher"] --> TA["Academics (Classes/Subjects)"]
+    T --> AT["Attendance & Homework"]
+    T --> EX["Exams & Results"]
+    
+    S["Student/Parent"] --> V["View Grades/Attendance"]
+    S --> PSS["Payments & Homework Subscriptions"]
+```
+
+### 3. Data Visibility & Privacy
+```mermaid
+graph LR
+    G["Global Access"] --- SA["Super Admin / Principal"]
+    D["Department Access"] --- H["HOD / Teacher"]
+    I["Individual Access"] --- SP["Student / Parent"]
+    
+    SA ---|Unrestricted| DB[(Full Database)]
+    H ---|Filtered by Dept| DB
+    SP ---|Filtered by UID| DB
+```
+
+---
+
 ## 1. Core Role Definitions
 
 | Role | Designation | Primary Responsibility |
