@@ -13,18 +13,18 @@ export default function AcademicsList() {
   const [addOpen, setAddOpen] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [selected, setSelected] = useState<any>(null);
-  const [formData, setFormData] = useState({ name: '', sections: '', subjects: '' });
+  const [formData, setFormData] = useState({ name: '', sections: '', subjects: '', department: '' });
   const { fetchApi } = useApi();
   const { role } = useAuth();
-  const canAdd = ["super_admin", "principal"].includes(role || '');
+  const canAdd = ["super_admin", "principal", "hod", "teacher"].includes(role || '');
 
   const load = () => { setLoading(true); fetchApi('/academics/classes').then(d => { setClasses(d || []); setLoading(false); }).catch(() => setLoading(false)); };
   useEffect(() => { load(); }, []);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetchApi('/academics/classes', { method: 'POST', body: JSON.stringify({ name: formData.name, sections: formData.sections.split(',').map(s => s.trim()), subjects: formData.subjects.split(',').map(s => s.trim()) }) });
-    setAddOpen(false); setFormData({ name: '', sections: '', subjects: '' }); load();
+    await fetchApi('/academics/classes', { method: 'POST', body: JSON.stringify({ name: formData.name, department: formData.department, sections: formData.sections.split(',').map(s => s.trim()), subjects: formData.subjects.split(',').map(s => s.trim()) }) });
+    setAddOpen(false); setFormData({ name: '', sections: '', subjects: '', department: '' }); load();
   };
 
   const openManage = (c: any) => { setSelected(c); setManageOpen(true); };
@@ -43,6 +43,7 @@ export default function AcademicsList() {
               <DialogHeader><DialogTitle>Add New Class</DialogTitle></DialogHeader>
               <form onSubmit={handleAdd} className="space-y-4">
                 <div className="space-y-2"><Label>Class Name</Label><Input required placeholder="e.g. Class 10" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} /></div>
+                <div className="space-y-2"><Label>Department (optional)</Label><Input placeholder="e.g. Science" value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} /></div>
                 <div className="space-y-2"><Label>Sections (comma-separated)</Label><Input required placeholder="e.g. A, B, C" value={formData.sections} onChange={e => setFormData({ ...formData, sections: e.target.value })} /></div>
                 <div className="space-y-2"><Label>Subjects (comma-separated)</Label><Input required placeholder="e.g. Mathematics, Science" value={formData.subjects} onChange={e => setFormData({ ...formData, subjects: e.target.value })} /></div>
                 <DialogFooter><Button type="submit">Save Class</Button></DialogFooter>

@@ -294,7 +294,7 @@ export default function AttendanceList() {
   const [selectedSession, setSelectedSession] = useState<AttSession | null>(null);
   const { fetchApi } = useApi();
   const { role } = useAuth();
-  const canMark = ["super_admin", "principal", "teacher"].includes(role || '');
+  const canMark = ["super_admin", "principal", "teacher", "hod"].includes(role || '');
 
   const loadSessions = () => {
     setLoading(true);

@@ -17,7 +17,7 @@ export default function LogisticsList() {
   const { fetchApi } = useApi();
   const { role } = useAuth();
 
-  const isAdmin = ["admin", "super_admin", "principal"].includes(role || '');
+  const isAdmin = ["admin", "super_admin", "principal", "hod"].includes(role || '');
 
   const endpoints: Record<Tab, string> = {
     library: '/logistics/library/books',

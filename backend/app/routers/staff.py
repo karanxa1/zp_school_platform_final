@@ -6,15 +6,41 @@ from app.core.dependencies import get_current_user, RoleChecker
 
 router = APIRouter()
 
-allow_all = RoleChecker({"super_admin", "principal", "teacher", "parent", "student"})
-allow_staff = RoleChecker({"super_admin", "principal", "teacher"})
-allow_admin = RoleChecker({"super_admin", "principal"})
+allow_all = RoleChecker({"super_admin", "principal", "hod", "teacher", "parent", "student"})
+allow_staff = RoleChecker({"super_admin", "principal", "hod", "teacher"})
+allow_admin = RoleChecker({"super_admin", "principal", "hod"})
 allow_super = RoleChecker({"super_admin"})
 
 @router.post("/", response_model=StaffResponse, status_code=status.HTTP_201_CREATED)
-def create_staff(staff: StaffCreate, current_user: dict = Depends(allow_super)):
+def create_staff(staff: StaffCreate, current_user: dict = Depends(allow_admin)):
     db = get_db()
+    role_hierarchy = {
+        "super_admin": ["principal", "hod", "teacher", "teaching", "non-teaching"],
+        "principal": ["hod", "teacher", "teaching", "non-teaching"],
+        "hod": ["teacher", "teaching", "non-teaching"]
+    }
+    
+    current_role = current_user.get("role")
+    if staff.role not in role_hierarchy.get(current_role, []):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"You do not have permission to create a user with the role '{staff.role}'."
+        )
+    
     staff_data = staff.model_dump()
+    
+    # Enforce department for HOD
+    if current_role == "hod":
+        staff_docs = db.collection('staff').where('email', '==', current_user.get("email")).limit(1).get()
+        if staff_docs:
+            hod_dept = staff_docs[0].to_dict().get("department")
+            if hod_dept:
+                staff_data["department"] = hod_dept
+            else:
+                raise HTTPException(status_code=400, detail="HOD must have a department assigned to create staff.")
+        else:
+            raise HTTPException(status_code=400, detail="Could not verify HOD department.")
+
     doc_ref = db.collection(u'staff').document()
     doc_ref.set(staff_data)
     return {**staff_data, "id": doc_ref.id}
@@ -25,7 +51,20 @@ def get_all_staff(current_user: dict = Depends(allow_all)):
     role = current_user.get("role", "student")
     
     staff_ref = db.collection(u'staff')
-    docs = staff_ref.stream()
+    
+    if role == "hod":
+        # Find HOD's department
+        staff_docs = staff_ref.where('email', '==', current_user.get("email")).limit(1).get()
+        if staff_docs:
+            hod_dept = staff_docs[0].to_dict().get("department")
+            if hod_dept:
+                docs = staff_ref.where("department", "==", hod_dept).stream()
+            else:
+                docs = [] # HOD has no department assigned
+        else:
+            docs = []
+    else:
+        docs = staff_ref.stream()
     
     staff_list = []
     for doc in docs:

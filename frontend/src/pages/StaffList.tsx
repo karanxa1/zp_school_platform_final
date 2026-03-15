@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useApi } from '../hooks/useApi';
 import { useAuth } from '../context/AuthContext';
 
-const EMPTY = { first_name: '', last_name: '', email: '', phone: '', role: 'teaching', department: '', designation: '', joining_date: '', salary: '', address: '' };
+const EMPTY = { first_name: '', last_name: '', email: '', password: '', phone: '', role: 'teaching', department: '', designation: '', joining_date: '', salary: '', address: '' };
 
 export default function StaffList() {
   const [staff, setStaff] = useState<any[]>([]);
@@ -19,7 +19,20 @@ export default function StaffList() {
   const [formData, setFormData] = useState(EMPTY);
   const { fetchApi } = useApi();
   const { role } = useAuth();
-  const canAdd = ["super_admin", "principal"].includes(role || '');
+  const canAdd = ["super_admin", "principal", "hod"].includes(role || '');
+  
+  const getSelectableRoles = () => {
+    if (role === 'super_admin') return ['principal', 'hod', 'teacher', 'teaching', 'non-teaching'];
+    if (role === 'principal') return ['hod', 'teacher', 'teaching', 'non-teaching'];
+    if (role === 'hod') return ['teacher', 'teaching', 'non-teaching'];
+    return [];
+  };
+
+  const getManagementPermission = (targetRole: string) => {
+    if (role === 'super_admin') return true;
+    const hierarchy: Record<string, number> = { 'super_admin': 4, 'principal': 3, 'hod': 2, 'teacher': 1, 'teaching': 0, 'non-teaching': 0 };
+    return (hierarchy[role || ''] || 0) > (hierarchy[targetRole] || 0);
+  };
 
   const load = () => { setLoading(true); fetchApi('/staff/').then(d => { setStaff(d || []); setLoading(false); }).catch(() => setLoading(false)); };
   useEffect(() => { load(); }, []);
@@ -68,16 +81,16 @@ export default function StaffList() {
                   <F label="Designation" field="designation" required />
                   <F label="Joining Date" field="joining_date" type="date" required />
                   <F label="Salary" field="salary" type="number" required />
+                  <F label="Initial Password" field="password" type="password" required />
                   <div className="space-y-1 col-span-2"><Label>Address</Label>
                     <Input value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
                   </div>
                   <div className="space-y-1">
                     <Label>Role</Label>
                     <select className="w-full border rounded-md px-3 py-2 text-sm bg-background" value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })}>
-                      <option value="teaching">Teaching</option>
-                      <option value="non-teaching">Non-Teaching</option>
-                      <option value="admin">Admin</option>
-                      <option value="principal">Principal</option>
+                      {getSelectableRoles().map(r => (
+                        <option key={r} value={r}>{r.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -109,7 +122,9 @@ export default function StaffList() {
                   <TableCell className="text-muted-foreground text-sm">{m.phone || m.phone_number}</TableCell>
                   <TableCell className="text-right space-x-1">
                     <Button variant="outline" size="sm" onClick={() => openView(m)}>View</Button>
-                    {canAdd && <Button variant="outline" size="sm" onClick={() => openEdit(m)}>Edit</Button>}
+                    {getManagementPermission(m.role) && (
+                      <Button variant="outline" size="sm" onClick={() => openEdit(m)}>Edit</Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

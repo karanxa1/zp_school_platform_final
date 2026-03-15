@@ -8,15 +8,15 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const EMPTY_FORM = { first_name: '', last_name: '', roll_number: '', grade: '', section: '', email: '', admission_number: '', gender: 'Male', dob: '', address: '', parent_name: '', parent_phone: '' };
+const EMPTY_FORM = { first_name: '', last_name: '', roll_number: '', grade: '', section: '', department: '', email: '', admission_number: '', gender: 'Male', dob: '', address: '', parent_name: '', parent_phone: '' };
 
 export default function StudentsList() {
   const [students, setStudents] = useState<any[]>([]);
   const { fetchApi, loading } = useApi();
   const { role } = useAuth();
   const navigate = useNavigate();
-  const canEdit = ["super_admin", "principal"].includes(role || '');
-  const canAdd  = ["super_admin", "principal", "teacher"].includes(role || '');
+  const canEdit = ["super_admin", "principal", "hod", "teacher"].includes(role || '');
+  const canAdd  = ["super_admin", "principal", "hod", "teacher"].includes(role || '');
 
   const [addOpen, setAddOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -35,7 +35,7 @@ export default function StudentsList() {
 
   const handleEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetchApi(`/students/${selected.id}`, { method: 'PATCH', body: JSON.stringify({ first_name: formData.first_name, last_name: formData.last_name, grade: formData.grade, section: formData.section }) });
+    await fetchApi(`/students/${selected.id}`, { method: 'PATCH', body: JSON.stringify({ first_name: formData.first_name, last_name: formData.last_name, grade: formData.grade, section: formData.section, department: formData.department }) });
     setEditOpen(false); load();
   };
 
@@ -73,6 +73,7 @@ export default function StudentsList() {
                     <F label="Roll No." field="roll_number" required />
                     <F label="Grade" field="grade" required />
                     <F label="Section" field="section" required />
+                    <F label="Department" field="department" />
                     <F label="Admission No." field="admission_number" required />
                     <F label="Date of Birth" field="dob" type="date" required />
                     <F label="Address" field="address" />
@@ -132,6 +133,7 @@ export default function StudentsList() {
               <F label="Last Name" field="last_name" />
               <F label="Grade" field="grade" />
               <F label="Section" field="section" />
+              <F label="Department" field="department" />
             </div>
             <DialogFooter><Button type="submit">Save Changes</Button></DialogFooter>
           </form>
@@ -144,7 +146,7 @@ export default function StudentsList() {
           <DialogHeader><DialogTitle>Student Details</DialogTitle></DialogHeader>
           {selected && (
             <div className="space-y-2 text-sm">
-              {[['Name', `${selected.first_name} ${selected.last_name}`], ['Email', selected.email], ['Roll No.', selected.roll_number], ['Grade', `${selected.grade} - ${selected.section}`], ['DOB', selected.dob], ['Gender', selected.gender], ['Address', selected.address], ['Parent', selected.parent_name], ['Parent Phone', selected.parent_phone]].map(([k, v]) => (
+              {[['Name', `${selected.first_name} ${selected.last_name}`], ['Email', selected.email], ['Roll No.', selected.roll_number], ['Grade', `${selected.grade} - ${selected.section}`], ['Department', selected.department || 'N/A'], ['DOB', selected.dob], ['Gender', selected.gender], ['Address', selected.address], ['Parent', selected.parent_name], ['Parent Phone', selected.parent_phone]].map(([k, v]) => (
                 <div key={k} className="flex gap-2"><span className="font-medium w-28 shrink-0">{k}:</span><span className="text-muted-foreground">{v}</span></div>
               ))}
             </div>

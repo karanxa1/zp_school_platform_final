@@ -16,7 +16,7 @@ export default function FeesList() {
   const { fetchApi } = useApi();
   const { role } = useAuth();
 
-  const canRecord = ["super_admin", "principal"].includes(role || '');
+  const canRecord = ["super_admin", "principal", "hod"].includes(role || '');
   const [error, setError] = useState<string | null>(null);
 
   const load = () => {
@@ -24,7 +24,7 @@ export default function FeesList() {
     setError(null);
     const endpoint = activeTab === 'structure' ? '/fees/structure' : '/fees/payments';
 
-    if (activeTab === 'payments' && !["super_admin", "principal"].includes(role || '')) {
+    if (activeTab === 'payments' && !["super_admin", "principal", "hod"].includes(role || '')) {
       setData([]);
       setLoading(false);
       setError("You don't have permission to view fee payment records.");

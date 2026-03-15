@@ -15,7 +15,7 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    if (['super_admin', 'principal'].includes(role || '')) {
+    if (['super_admin', 'principal', 'hod'].includes(role || '')) {
       fetchAdminStats();
     }
   }, [role]);
@@ -50,7 +50,7 @@ export default function Dashboard() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {['super_admin', 'principal'].includes(role || '') ? (
+          {['super_admin', 'principal', 'hod'].includes(role || '') ? (
             <>
               <div className="glass-card p-6 aspect-video flex flex-col justify-between">
                 <div className="h-10 w-10 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-500 mb-4">S</div>

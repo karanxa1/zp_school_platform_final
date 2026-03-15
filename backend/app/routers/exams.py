@@ -6,13 +6,13 @@ from app.core.dependencies import get_current_user, RoleChecker
 
 router = APIRouter()
 
-allow_all = RoleChecker({"super_admin", "principal", "teacher", "parent", "student"})
-allow_admin = RoleChecker({"super_admin", "principal"})
+allow_all = RoleChecker({"super_admin", "principal", "hod", "teacher", "parent", "student"})
+allow_admin = RoleChecker({"super_admin", "principal", "hod"})
 allow_super = RoleChecker({"super_admin"})
-allow_exam_marker = RoleChecker({"super_admin", "teacher"})
+allow_exam_marker = RoleChecker({"super_admin", "hod", "teacher"})
 
 @router.post("/", response_model=ExamResponse, status_code=status.HTTP_201_CREATED)
-def create_exam(exam: ExamCreate, current_user: dict = Depends(allow_super)):
+def create_exam(exam: ExamCreate, current_user: dict = Depends(allow_admin)):
     db = get_db()
     data = exam.model_dump()
     doc_ref = db.collection(u'exams').document()

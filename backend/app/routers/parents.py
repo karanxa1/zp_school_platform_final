@@ -7,8 +7,8 @@ from app.core.dependencies import get_current_user, RoleChecker
 router = APIRouter()
 
 allow_parent = RoleChecker({"parent"})
-allow_staff = RoleChecker({"super_admin", "principal", "teacher"})
-allow_all = RoleChecker({"super_admin", "principal", "teacher", "parent"})
+allow_staff = RoleChecker({"super_admin", "principal", "hod", "teacher"})
+allow_all = RoleChecker({"super_admin", "principal", "hod", "teacher", "parent"})
 
 @router.get("/dashboard", response_model=ParentDashboardResponse)
 def get_parent_dashboard(current_user: dict = Depends(allow_parent)):

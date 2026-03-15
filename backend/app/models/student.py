@@ -7,7 +7,8 @@ class StudentBase(BaseModel):
     last_name: str
     email: EmailStr
     admission_number: str
-    grade: str
+    department: str  # Branch like CS, ENTC, IT
+    grade: str       # Year or Semester
     section: str
     roll_number: int
     dob: str
@@ -38,6 +39,7 @@ class StudentUpdate(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email: Optional[EmailStr] = None
+    department: Optional[str] = None
     grade: Optional[str] = None
     section: Optional[str] = None
     roll_number: Optional[int] = None

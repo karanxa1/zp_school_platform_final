@@ -8,7 +8,7 @@ export default function ReportsList() {
   const { role } = useAuth();
   const api = useApi();
   
-  if (!['super_admin', 'principal'].includes(role || '')) {
+  if (!['super_admin', 'principal', 'hod'].includes(role || '')) {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-muted-foreground">You do not have permission to view this page.</p>

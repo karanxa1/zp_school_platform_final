@@ -6,14 +6,24 @@ from app.core.dependencies import get_current_user, RoleChecker
 
 router = APIRouter()
 
-allow_all = RoleChecker({"super_admin", "principal", "teacher", "parent", "student"})
-allow_admin = RoleChecker({"super_admin", "principal"})
+allow_all = RoleChecker({"super_admin", "principal", "hod", "teacher", "parent", "student"})
+allow_staff = RoleChecker({"super_admin", "principal", "hod", "teacher"})
+allow_admin = RoleChecker({"super_admin", "principal", "hod"})
 allow_super = RoleChecker({"super_admin"})
 
 @router.post("/classes", response_model=AcademicClassResponse, status_code=status.HTTP_201_CREATED)
-def create_class(acad_class: AcademicClassCreate, current_user: dict = Depends(allow_super)):
+def create_class(acad_class: AcademicClassCreate, current_user: dict = Depends(allow_staff)):
     db = get_db()
     data = acad_class.model_dump()
+    
+    role = current_user.get("role")
+    if role in ["hod", "teacher"] and not data.get("department"):
+         staff_docs = db.collection('staff').where('email', '==', current_user.get("email")).limit(1).get()
+         if staff_docs:
+             dept = staff_docs[0].to_dict().get("department")
+             if dept:
+                 data["department"] = dept
+
     doc_ref = db.collection(u'classes').document()
     doc_ref.set(data)
     return {**data, "id": doc_ref.id}
@@ -22,24 +32,36 @@ def create_class(acad_class: AcademicClassCreate, current_user: dict = Depends(a
 def get_all_classes(current_user: dict = Depends(allow_all)):
     db = get_db()
     ref = db.collection(u'classes')
-    docs = ref.stream()
     
-    classes = []
     role = current_user.get("role", "student")
     uid = current_user.get("uid")
     
+    if role == "hod":
+        staff_docs = db.collection('staff').where('email', '==', current_user.get("email")).limit(1).get()
+        if staff_docs:
+            hod_dept = staff_docs[0].to_dict().get("department")
+            if hod_dept:
+                docs = ref.where("department", "==", hod_dept).stream()
+            else:
+                docs = []
+        else:
+            docs = []
+    else:
+        docs = ref.stream()
+        
+    classes = []
     for doc in docs:
         c_data = doc.to_dict()
         c_data["id"] = doc.id
         
-        # Scoping logic placeholder
+        # Scoping logic
         if role == "teacher":
             # only return if teacher is assigned to this class
             classes.append(c_data)
         elif role in ["student", "parent"]:
             # only return their own class
             classes.append(c_data)
-        else:
+        elif role in ["super_admin", "principal", "hod"]:
             classes.append(c_data)
             
     return classes

@@ -7,8 +7,8 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
-allow_all = RoleChecker({"super_admin", "principal", "teacher", "parent", "student"})
-allow_staff = RoleChecker({"super_admin", "principal", "teacher"})
+allow_all = RoleChecker({"super_admin", "principal", "hod", "teacher", "parent", "student"})
+allow_staff = RoleChecker({"super_admin", "principal", "hod", "teacher"})
 
 
 class DailyAttendanceCreate(BaseModel):

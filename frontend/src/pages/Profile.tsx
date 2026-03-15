@@ -40,6 +40,22 @@ const roleFeatures = {
       { name: 'Reports Generation', description: 'Generate academic and financial reports', icon: '📊' },
     ]
   },
+  hod: {
+    title: 'Head of Department / Branch Head',
+    description: 'Administrative access for department/branch-level oversight',
+    features: [
+      { name: 'Department Students', description: 'Manage students in your department', icon: '🎓' },
+      { name: 'Department Staff', description: 'Manage staff in your department', icon: '👔' },
+      { name: 'Academics', description: 'Manage classes for your department', icon: '📚' },
+      { name: 'Attendance Oversight', description: 'Monitor department attendance', icon: '📋' },
+      { name: 'Fee View', description: 'View fee payment status', icon: '💰' },
+      { name: 'Exam Management', description: 'Manage exams and results', icon: '📝' },
+      { name: 'Homework Review', description: 'Assign and monitor homework', icon: '📖' },
+      { name: 'Logistics Access', description: 'Manage resources', icon: '🚌' },
+      { name: 'Communication', description: 'Send notices and handle complaints', icon: '📢' },
+      { name: 'Reports Generation', description: 'Generate department reports', icon: '📊' },
+    ]
+  },
   teacher: {
     title: 'Teacher',
     description: 'Academic and classroom management access',
@@ -136,6 +152,7 @@ export default function Profile() {
             <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center text-3xl">
               {role === 'super_admin' && '👑'}
               {role === 'principal' && '🎓'}
+              {role === 'hod' && '🏛️'}
               {role === 'teacher' && '👨‍🏫'}
               {role === 'parent' && '👨‍👩‍👧'}
               {role === 'student' && '🎒'}
@@ -267,7 +284,7 @@ export default function Profile() {
             </Button>
           )}
           
-          {['super_admin', 'principal', 'teacher'].includes(role || '') && (
+          {['super_admin', 'principal', 'hod', 'teacher'].includes(role || '') && (
             <>
               <Button className="w-full" onClick={() => window.location.href = '/students'}>
                 🎓 Manage Students
@@ -293,7 +310,7 @@ export default function Profile() {
             📢 Notices
           </Button>
 
-          {['super_admin', 'principal'].includes(role || '') && (
+          {['super_admin', 'principal', 'hod'].includes(role || '') && (
             <Button className="w-full" variant="outline" onClick={() => window.location.href = '/reports'}>
               📊 Generate Reports
             </Button>

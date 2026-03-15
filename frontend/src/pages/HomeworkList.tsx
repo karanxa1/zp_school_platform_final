@@ -18,7 +18,7 @@ export default function HomeworkList() {
   const [formData, setFormData] = useState({ title: '', description: '', class_id: '', section_id: '', subject: '', due_date: '', teacher_id: '' });
   const { fetchApi } = useApi();
   const { role } = useAuth();
-  const canAssign = ["super_admin", "principal", "teacher"].includes(role || '');
+  const canAssign = ["super_admin", "principal", "teacher", "hod"].includes(role || '');
 
   const load = () => { setLoading(true); fetchApi('/homework/').then(d => { setAssignments(d || []); setLoading(false); }).catch(() => setLoading(false)); };
   useEffect(() => { load(); }, []);

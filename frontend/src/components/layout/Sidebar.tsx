@@ -3,7 +3,7 @@ import { Home, Users, BookOpen, UserCheck, CreditCard, FileText, Settings, X, Gr
 import { useAuth } from '../../context/AuthContext';
 import { useEffect, useRef } from 'react';
 
-const adminRoles = ["admin", "super_admin", "principal"];
+const adminRoles = ["admin", "super_admin", "principal", "hod"];
 const teacherRoles = [...adminRoles, "teacher", "staff"];
 const allRoles = [...teacherRoles, "student", "parent"];
 

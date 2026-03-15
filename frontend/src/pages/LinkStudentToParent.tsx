@@ -35,7 +35,7 @@ export default function LinkStudentToParent() {
     create_parent_if_not_exists: true
   });
 
-  const canLink = ['super_admin', 'principal', 'teacher'].includes(role || '');
+  const canLink = ['super_admin', 'principal', 'teacher', 'hod'].includes(role || '');
 
   useEffect(() => {
     if (canLink) {

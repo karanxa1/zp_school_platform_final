@@ -7,9 +7,9 @@ from app.core.dependencies import get_current_user, RoleChecker
 
 router = APIRouter()
 
-allow_all = RoleChecker({"super_admin", "principal", "teacher", "parent", "student"})
-allow_hw_assigner = RoleChecker({"super_admin", "teacher"})
-allow_hw_submitter = RoleChecker({"super_admin", "teacher", "student"})
+allow_all = RoleChecker({"super_admin", "principal", "hod", "teacher", "parent", "student"})
+allow_hw_assigner = RoleChecker({"super_admin", "principal", "hod", "teacher"})
+allow_hw_submitter = RoleChecker({"super_admin", "principal", "hod", "teacher", "student"})
 
 @router.post("/", response_model=HomeworkResponse, status_code=status.HTTP_201_CREATED)
 def assign_homework(hw: HomeworkCreate, current_user: dict = Depends(allow_hw_assigner)):
@@ -37,6 +37,8 @@ def get_all_homework(current_user: dict = Depends(allow_all)):
         # Simple scoping
         if role == "teacher" and data.get("assigned_by") != uid:
             continue
+        elif role == "hod":
+            pass # In real app, filter by HOD's department's classes
         # In a real app we'd scope students/parents to their specific class IDs
             
         hw_list.append(data)

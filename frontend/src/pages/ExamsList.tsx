@@ -18,7 +18,7 @@ export default function ExamsList() {
   const [formData, setFormData] = useState({ name: '', term: 'Term 1', class_id: '', start_date: '', end_date: '' });
   const { fetchApi } = useApi();
   const { role } = useAuth();
-  const canAdd = ["super_admin", "principal", "teacher"].includes(role || '');
+  const canAdd = ["super_admin", "principal", "teacher", "hod"].includes(role || '');
 
   const load = () => { setLoading(true); fetchApi('/exams/').then(d => { setExams(d || []); setLoading(false); }).catch(() => setLoading(false)); };
   useEffect(() => { load(); }, []);

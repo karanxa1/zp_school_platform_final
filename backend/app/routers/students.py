@@ -13,9 +13,9 @@ from firebase_admin import auth
 
 router = APIRouter()
 
-allow_all = RoleChecker({"super_admin", "principal", "teacher", "parent", "student"})
-allow_staff = RoleChecker({"super_admin", "principal", "teacher"})
-allow_admin = RoleChecker({"super_admin", "principal"})
+allow_all = RoleChecker({"super_admin", "principal", "hod", "teacher", "parent", "student"})
+allow_staff = RoleChecker({"super_admin", "principal", "hod", "teacher"})
+allow_admin = RoleChecker({"super_admin", "principal", "hod"})
 allow_super = RoleChecker({"super_admin"})
 
 def generate_password(length=12):
@@ -24,9 +24,19 @@ def generate_password(length=12):
     return ''.join(secrets.choice(alphabet) for _ in range(length))
 
 @router.post("/", response_model=StudentResponse, status_code=status.HTTP_201_CREATED)
-def create_student(student: StudentCreate, current_user: dict = Depends(allow_super)):
+def create_student(student: StudentCreate, current_user: dict = Depends(allow_staff)):
     db = get_db()
     student_data = student.model_dump()
+    
+    # Auto-assign department if creator is HOD or Teacher
+    role = current_user.get("role")
+    if role in ["hod", "teacher"] and not student_data.get("department"):
+         staff_docs = db.collection('staff').where('email', '==', current_user.get("email")).limit(1).get()
+         if staff_docs:
+             dept = staff_docs[0].to_dict().get("department")
+             if dept:
+                 student_data["department"] = dept
+
     doc_ref = db.collection(u'students').document()
     doc_ref.set(student_data)
     return {**student_data, "id": doc_ref.id}
@@ -167,6 +177,16 @@ def get_all_students(current_user: dict = Depends(allow_all)):
         # In a real app, you'd fetch the teacher's assigned classes first, 
         # then filter students by those class_ids. For simple mockup, return all or limited.
         docs = students_ref.stream()
+    elif role == "hod":
+        staff_docs = db.collection('staff').where('email', '==', current_user.get("email")).limit(1).get()
+        if staff_docs:
+            hod_dept = staff_docs[0].to_dict().get("department")
+            if hod_dept:
+                docs = students_ref.where("department", "==", hod_dept).stream()
+            else:
+                docs = []
+        else:
+            docs = []
     else:
         # super_admin, principal
         docs = students_ref.stream()

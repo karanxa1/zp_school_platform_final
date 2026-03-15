@@ -7,8 +7,8 @@ from app.core.dependencies import get_current_user, RoleChecker
 
 router = APIRouter()
 
-allow_all = RoleChecker({"super_admin", "principal", "teacher", "parent", "student"})
-allow_admin = RoleChecker({"super_admin", "principal"})
+allow_all = RoleChecker({"super_admin", "principal", "hod", "teacher", "parent", "student"})
+allow_admin = RoleChecker({"super_admin", "principal", "hod"})
 
 # --- Notices ---
 @router.post("/notices", response_model=NoticeResponse, status_code=status.HTTP_201_CREATED)

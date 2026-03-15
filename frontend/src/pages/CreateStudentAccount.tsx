@@ -18,6 +18,7 @@ export default function CreateStudentAccount() {
     admission_number: '',
     grade: '',
     section: '',
+    department: '',
     roll_number: '',
     dob: '',
     gender: 'Male',
@@ -31,7 +32,7 @@ export default function CreateStudentAccount() {
     create_parent_account: false
   });
 
-  const canCreate = ['super_admin', 'principal', 'teacher'].includes(role || '');
+  const canCreate = ['super_admin', 'principal', 'hod', 'teacher'].includes(role || '');
 
   if (!canCreate) {
     return (
@@ -68,6 +69,7 @@ export default function CreateStudentAccount() {
         admission_number: '',
         grade: '',
         section: '',
+        department: '',
         roll_number: '',
         dob: '',
         gender: 'Male',
@@ -208,6 +210,11 @@ export default function CreateStudentAccount() {
               <div className="space-y-2">
                 <Label>Section *</Label>
                 <Input required placeholder="e.g., A" value={formData.section} onChange={e => setFormData({...formData, section: e.target.value})} />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Department (optional)</Label>
+                <Input placeholder="e.g., Science" value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} />
               </div>
 
               <div className="space-y-2">
