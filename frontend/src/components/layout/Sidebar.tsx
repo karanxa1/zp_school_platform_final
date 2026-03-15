@@ -60,7 +60,7 @@ export default function Sidebar({ isOpen, setIsOpen }: { isOpen: boolean, setIsO
       className={`fixed inset-y-0 left-0 z-50 w-64 glass border-r transform transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-screen overflow-hidden ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
     >
       <div className="flex items-center justify-between px-6 h-16 border-b border-border/50 flex-shrink-0">
-        <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">School ERP</span>
+        <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">A. P. College</span>
         <button onClick={() => setIsOpen(false)} className="md:hidden p-2">
           <X className="w-5 h-5 text-muted-foreground" />
         </button>

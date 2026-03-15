@@ -92,11 +92,11 @@ export default function LandingPage() {
           <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-black text-xs font-bold tracking-[0.18em] text-white">
-                ZP
+                AP
               </div>
               <div className="flex flex-col leading-tight">
-                <span className="text-sm font-semibold text-slate-900">ZP School ERP</span>
-                <span className="text-[11px] text-slate-500">Built for Zilla Parishad schools</span>
+                <span className="text-sm font-semibold text-slate-900">A. P. College ERP</span>
+                <span className="text-[11px] text-slate-500">Built for Junior Colleges</span>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -125,13 +125,13 @@ export default function LandingPage() {
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-3 py-1 text-xs font-medium text-slate-700">
                 <span className="flex h-1.5 w-5 items-center rounded-full bg-gradient-to-r from-slate-900 to-slate-500" />
-                Live, production-ready platform for ZP schools
+                Live, production-ready platform for A. P. Colleges
               </div>
               <div className="space-y-4">
                 <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
                   One ERP for every{" "}
                   <span className="bg-gradient-to-r from-black via-slate-700 to-slate-500 bg-clip-text text-transparent">
-                    Zilla Parishad school
+                    Junior College
                   </span>
                   .
                 </h1>
@@ -193,7 +193,7 @@ export default function LandingPage() {
                   </div>
                   <div className="flex items-center gap-1 rounded-full border border-black/10 px-2 py-0.5 font-mono text-[10px] text-slate-500">
                     <LayoutDashboard className="h-3 w-3" />
-                    zp-school-erp
+                    ap-college-erp
                   </div>
                 </div>
 
@@ -244,7 +244,7 @@ export default function LandingPage() {
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Core modules</p>
                 <h2 className="mt-2 text-xl font-semibold text-slate-900 sm:text-2xl">
-                  Everything a ZP school office runs on.
+                  Everything an A. P. College office runs on.
                 </h2>
               </div>
               <p className="max-w-md text-xs text-slate-600 sm:text-sm">
@@ -333,7 +333,7 @@ export default function LandingPage() {
                   onClick={() => navigate("/login")}
                   className="w-full bg-white text-slate-900 hover:bg-slate-100 sm:w-auto transition-transform duration-200 hover:-translate-y-0.5"
                 >
-                  Sign in to ZP ERP
+                  Sign in to A. P. College ERP
                   <ChevronRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
@@ -345,12 +345,12 @@ export default function LandingPage() {
           <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-3 px-4 sm:flex-row sm:items-center">
             <div className="flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-md bg-white text-[10px] font-semibold text-black">
-                ZP
+                AP
               </div>
-              <span className="font-medium text-slate-200">ZP School ERP</span>
+              <span className="font-medium text-slate-200">A. P. College ERP</span>
             </div>
             <p className="text-[11px] text-slate-500">
-              © {new Date().getFullYear()} ZP School ERP. Purpose-built for Zilla Parishad schools in Maharashtra.
+              © {new Date().getFullYear()} A. P. College ERP. Purpose-built for Junior Colleges.
             </p>
           </div>
         </footer>

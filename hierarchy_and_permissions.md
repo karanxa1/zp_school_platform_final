@@ -1,6 +1,6 @@
-# ZP School Platform: Comprehensive Hierarchy & Permissions
+# A. P. College Platform: Comprehensive Hierarchy & Permissions
 
-This document defines the absolute source of truth for all roles, permissions, and data access policies within the ZP School Platform.
+This document defines the absolute source of truth for all roles, permissions, and data access policies within the A. P. College Platform.
 
 ---
 
@@ -73,7 +73,7 @@ graph LR
 | Role | Designation | Primary Responsibility |
 | :--- | :--- | :--- |
 | **Super Admin** | Platform Owner | Global system configuration, seeding, and management of Principals. |
-| **Principal** | School Head | Operational oversight, HOD management, and high-level academic approvals. |
+| **Principal** | A. P. College Head | Operational oversight, HOD management, and high-level academic approvals. |
 | **HOD** | Dept. Head | Management of specific departments (e.g., Science, Arts) and their teachers. |
 | **Teacher** | Class Educator | Student management, homework, attendance, and result entry. |
 | **Student** | Learner | Accessing educational materials, viewing results, and submitting homework. |
@@ -159,7 +159,7 @@ A user can only create/manage accounts for roles **lower** than their own in the
 - **Implementation**: `backend/app/routers/communication.py`
 
 ### K. System Settings
-- **Modify School Info**: Super Admin Only.
+- **Modify A. P. College Info**: Super Admin Only.
 - **System Seeding**: Super Admin Only.
 - **Generate Reports**: Super Admin, Principal, HOD.
 - **Implementation**: `backend/app/routers/reports_settings.py`

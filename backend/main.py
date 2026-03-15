@@ -42,7 +42,7 @@ from app.routers import auth, students, staff, academics, attendance, fees, exam
 
 @app.get("/")
 def root():
-    return {"message": "Welcome to School ERP Platform API"}
+    return {"message": "Welcome to A. P. College ERP Platform API"}
 
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
 app.include_router(students.router, prefix=f"{settings.API_V1_STR}/students", tags=["students"])

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from datetime import datetime
-from app.models.reports_settings import SchoolSettingsCreate, SchoolSettingsResponse, ReportRequest
+from app.models.reports_settings import CollegeSettingsCreate, CollegeSettingsResponse, ReportRequest
 from app.core.database import get_db
 from app.core.dependencies import get_current_user, RoleChecker
 from app.core.seeder import seed_database
@@ -13,8 +13,8 @@ allow_admin = RoleChecker({"super_admin", "principal", "hod"})
 allow_super = RoleChecker({"super_admin"})
 
 # --- Settings ---
-@router.post("/settings", response_model=SchoolSettingsResponse)
-def update_settings(settings: SchoolSettingsCreate, current_user: dict = Depends(allow_super)):
+@router.post("/settings", response_model=CollegeSettingsResponse)
+def update_settings(settings: CollegeSettingsCreate, current_user: dict = Depends(allow_super)):
     db = get_db()
     data = settings.model_dump()
     data['updated_at'] = datetime.now().isoformat()
@@ -33,7 +33,7 @@ def seed_system_data(current_user: dict = Depends(allow_super)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to seed data: {str(e)}")
 
-@router.get("/settings", response_model=SchoolSettingsResponse)
+@router.get("/settings", response_model=CollegeSettingsResponse)
 def get_settings(current_user: dict = Depends(allow_all)):
     db = get_db()
     doc = db.collection(u'system_settings').document('global').get()

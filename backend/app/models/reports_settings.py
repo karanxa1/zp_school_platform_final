@@ -2,18 +2,18 @@ from typing import Optional, Dict
 from pydantic import BaseModel
 from datetime import datetime
 
-class SchoolSettingsBase(BaseModel):
-    school_name: str
+class CollegeSettingsBase(BaseModel):
+    college_name: str
     academic_year: str
     grading_system: Optional[str] = "Percentage" # e.g. "GPA", "Percentage"
     contact_email: str
     contact_phone: str
     features_toggled: Optional[Dict[str, bool]] = {} # e.g. {"transport": True, "hostel": False}
 
-class SchoolSettingsCreate(SchoolSettingsBase):
+class CollegeSettingsCreate(CollegeSettingsBase):
     pass
 
-class SchoolSettingsResponse(SchoolSettingsBase):
+class CollegeSettingsResponse(CollegeSettingsBase):
     id: str
     updated_at: str
 
